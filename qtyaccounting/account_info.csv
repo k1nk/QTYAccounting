@@ -1,0 +1,11 @@
+account,sub_account,item,side,method,tax_cat,disp_cat
+現金,,,Dr,,,A
+預金,,,Dr,,,A
+売掛金,,,Dr,,,A
+商品,,,Dr,FIFO,,A
+貯蔵品,,,Dr,MA,,B
+借入金,,,Cr,,,C
+前期繰越利益,,,Cr,,,D
+売上高,,,Cr,,,E
+売上原価,,,Dr,,,F
+通信費,電話代,9012345678,Dr,,,G
