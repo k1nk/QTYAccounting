@@ -1,0 +1,182 @@
+{
+  "journal": [
+    "商品の仕入と売上の例",
+    {
+      "journal_entry": {
+        "entry_header": {
+          "datetime": [
+            "DATETIME",
+            "2022-01-01"
+          ],
+          "memo": {
+            "KIND": "OPENING"
+          },
+          "remarks": "開始仕訳"
+        },
+        "body": [
+          {
+            "debit": {
+              "account": "預金",
+              "amount": 93000,
+              "amount_unit": "円"
+            }
+          },
+          {
+            "debit": {
+              "account": "商品",
+              "item": "Tシャツ",
+              "quantity": 10,
+              "quantity_unit": "個",
+              "amount": 7000,
+              "amount_unit": "円"
+            }
+          },
+          {
+            "credit": {
+              "account": "資本金",
+              "amount": 100000
+            }
+          }
+        ],
+        "entry_footer": {}
+      }
+    },
+    {
+      "journal_entry": {
+        "entry_header": {
+          "datetime": [
+            "DATETIME",
+            "2022-05-14"
+          ],
+          "remarks": "商品の仕入１"
+        },
+        "body": [
+          {
+            "debit": {
+              "account": "商品",
+              "item": "Tシャツ",
+              "quantity": 10,
+              "quantity_unit": "個",
+              "amount": 6000,
+              "amount_unit": "円"
+            }
+          },
+          {
+            "credit": {
+              "account": "預金",
+              "amount": 6000
+            }
+          }
+        ],
+        "entry_footer": {}
+      }
+    },
+    {
+      "journal_entry": {
+        "entry_header": {
+          "datetime": [
+            "DATETIME",
+            "2022-08-15"
+          ],
+          "remarks": "商品の仕入２"
+        },
+        "body": [
+          {
+            "debit": {
+              "account": "商品",
+              "item": "Tシャツ",
+              "quantity": 10,
+              "quantity_unit": "個",
+              "amount": 7000,
+              "amount_unit": "円"
+            }
+          },
+          {
+            "credit": {
+              "account": "預金",
+              "amount": 7000
+            }
+          }
+        ],
+        "entry_footer": {}
+      }
+    },
+    {
+      "journal_entry": {
+        "entry_header": {
+          "datetime": [
+            "DATETIME",
+            "2022-10-16"
+          ],
+          "remarks": "商品の売上"
+        },
+        "body": [
+          {
+            "debit": {
+              "account": "売上原価",
+              "item": "Tシャツ",
+              "amount": {
+                "op_amount": "OP_EQUAL_AMOUNT"
+              },
+              "amount_unit": "円",
+              "partner": "得意先A"
+            }
+          },
+          {
+            "credit": {
+              "account": "商品",
+              "item": "Tシャツ",
+              "quantity": 5,
+              "quantity_unit": "個",
+              "amount": {
+                "op_amount": "OP_AUTO_AMOUNT"
+              },
+              "remarks": "払出価額の自動計算"
+            }
+          }
+        ],
+        "entry_footer": {}
+      }
+    },
+    {
+      "journal_entry": {
+        "entry_header": {
+          "datetime": [
+            "DATETIME",
+            "2022-12-16"
+          ],
+          "partner": "得意先A"
+        },
+        "body": [
+          {
+            "debit": {
+              "account": "売掛金",
+              "amount": {
+                "op_amount": "OP_EQUAL_AMOUNT"
+              },
+              "amount_unit": "円"
+            }
+          },
+          {
+            "credit": {
+              "account": "売上高",
+              "item": "Tシャツ",
+              "price": 200,
+              "quantity": 5,
+              "quantity_unit": "個",
+              "memo": {
+                "天気": "晴れ",
+                "気温": [
+                  26,
+                  "度"
+                ]
+              },
+              "remarks": "売上計上"
+            }
+          }
+        ],
+        "entry_footer": {}
+      }
+    }
+  ]
+}
