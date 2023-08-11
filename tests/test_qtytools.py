@@ -33,6 +33,7 @@ Cr　預金 6000>>"""
     assert datetime.children[0]==Token('DATETIME', '2023-08-07T03:12:40+09:00'),"datetimeの内容が取得されているか"
 
 def test_header_remarks():
+    #remarksのテスト
     journal1 = r"""
 <<2023-08-07T03:12:40+09:00 ##商品の仕入１
 Dr　商品#Tシャツ *10個 6000円
