@@ -9,6 +9,10 @@ from pathlib import Path
 from lark import Lark
 
 class MfCSVToCSVTree:
+    """
+    マネーフォワードののCSVファイルからCSVの構文木を作成する
+    摘要欄に数量簿記の数量等の情報を記入して解析するため
+    """
     tekiyou_def_str = r"""
         tekiyou: tekiyou_entry?
         tekiyou_entry: entry_header (debit | credit)+ entry_footer
@@ -46,7 +50,10 @@ class MfCSVToCSVTree:
             csv_tree = self.csv_parser_mf_lalr.parse(f.read())
     
         return csv_tree
-
+    
+    def translate(self,csv_text):
+        return self.csv_parser_mf_lalr.parse(csv_text)
+    
 
 class  CSVTreeToJournalDic(InterpretBaseTree):
     
@@ -137,7 +144,12 @@ class  CSVTreeToJournalDic(InterpretBaseTree):
             tekiyou_dr = tekiyou["tekiyou_entry"]["body"][0].get("debit",None)
             if tekiyou_dr is not None:
                 row_dic_dr_memo_org = row_dic_dr.get("memo",None)
+
+                #tekiyou_drでamountを指定した場合、updateされる。
+                #もとの会計ファイルで指定していたamountが上書きされるので、
+                #それが必要な場合は、debitのメモORIGINAL_AMOUNTに保存されている値を参照する
                 row_dic["body"][0]["debit"].update(tekiyou_dr)
+
                 if row_dic_dr_memo_org is not None:
                     if row_dic["body"][0].get("memo",None) is not None:
                         row_dic["body"][0]["memo"].update(row_dic_dr_memo_org)
@@ -148,6 +160,10 @@ class  CSVTreeToJournalDic(InterpretBaseTree):
             tekiyou_cr = tekiyou["tekiyou_entry"]["body"][1].get("credit",None)
             if tekiyou_cr is not None:
                 row_dic_cr_memo_org = row_dic_cr.get("memo",None)
+
+                #tekiyou_crでamountを指定した場合、updateされる。
+                #もとの会計ファイルで指定していたamountが上書きされるので、
+                #それが必要な場合は、creditのメモORIGINAL_AMOUNTに保存されている値を参照する
                 row_dic["body"][1]["credit"].update(tekiyou_cr)
                 if row_dic_cr_memo_org is not None:
                     if row_dic["body"][1].get("memo",None) is not None:
@@ -271,12 +287,18 @@ class  CSVTreeToJournalDic(InterpretBaseTree):
                     else:
                         contnt_number = int(content)
                     row_dic["body"][0]["debit"]["amount"]=contnt_number
+                    #ORIGINAL_AMOUNT ORIGINAL_AMOUNT_UNIT
+                    # todo
+                    row_dic["body"][0]["debit"]["memo"]["ORIGINAL_AMOUNT"]=contnt_number
+                    row_dic["body"][0]["debit"]["memo"]["ORIGINAL_AMOUNT_UNIT"]="円"
+                    #row_dic["body"][0]["debit"]["memo"]["ORIGINAL_AMOUNT"]=(contnt_number,"円")
             elif heading=="借方税額":
                 assert i == 9
                 if c0 is not None:
                     content = self.visit(c0)
                     content_int = int(content)
-                    row_dic["body"][0]["debit"]["memo"]["借方税額"]=(content_int,"円")              
+                    row_dic["body"][0]["debit"]["memo"]["借方税額"]=content_int
+                    row_dic["body"][0]["debit"]["memo"]["借方税額単位"]="円"             
             elif heading=="貸方勘定科目":
                 assert i == 10
                 if c0 is not None:
@@ -319,12 +341,18 @@ class  CSVTreeToJournalDic(InterpretBaseTree):
                     else:
                         contnt_number = int(content)
                     row_dic["body"][1]["credit"]["amount"]=contnt_number
+                    #ORIGINAL_AMOUNT ORIGINAL_AMOUNT_UNIT
+                    row_dic["body"][1]["credit"]["memo"]["ORIGINAL_AMOUNT"]=contnt_number
+                    row_dic["body"][1]["credit"]["memo"]["ORIGINAL_AMOUNT_UNIT"]="円"
+
             elif heading=="貸方税額":
                 assert i == 17
                 if c0 is not None:
                     content = self.visit(c0)
                     content_int = int(content)
-                    row_dic["body"][1]["credit"]["memo"]["貸方税額"]=(content_int,"円")              
+                    row_dic["body"][1]["credit"]["memo"]["貸方税額"]=content_int
+                    row_dic["body"][1]["credit"]["memo"]["貸方税額単位"]="円"
+
             elif heading=="摘要":
                 assert i == 18
                 remarks =""

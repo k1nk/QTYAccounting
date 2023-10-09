@@ -19,6 +19,14 @@ from collections import deque
 from ast import literal_eval
 
 class QTYJournalToTree:
+    """
+    １つ以上の数量簿記の仕訳（journal_entry）を含む仕訳帳（journal、テキスト形式）を解析して構文木を作成する。
+
+    journal_strは仕訳帳（journal）および仕訳（journal_entry）の定義を表わす。
+    lark_def_strは、仕訳（journal_entry）の構成要素の定義を表わす。
+    datetime_def_strは、特に日時の定義を表す。日時は、ISO 8601に準拠した形式としている。
+    """
+
     ## ver20230714 accept ref_memo with param. change quote char of ref_memo  from "<>" to "[]"
     ## ver20230721 add weight _REF_START_MARK _REF_END_MARK
     ##             devide PARENTHESIS to PARENTHESIS and PARENTHESIS_MARK
@@ -171,7 +179,21 @@ class QTYJournalToTree:
         self.journal_parser_lalr = Lark(self.journal_str+self.lark_def_str+self.datetime_def_str,start ="journal",parser='lalr')
     
     def translate(self,journal):
-        return self.journal_parser_lalr.parse(journal)
+        """
+        仕訳帳（journal）を解析(prase)して構文木を返す。
+
+        Parameters
+        ----------
+        journal : str
+            仕訳帳
+
+        Returns
+        -------
+        tree : Tree
+            構文木
+        """
+        tree = self.journal_parser_lalr.parse(journal)
+        return tree
 
 class CalculateTree(Transformer):
     # 変換のための基本となるクラス
@@ -1401,7 +1423,7 @@ class Ledgers:
             
             
             # 期首残高は、memo　key:KIND　value:OPENINGを指定して表現  &KIND::OPENING
-            # 決算整理は、mono key:KIND　value:ADJUSTINGを指定して表現  &KIND::ADJUSTING                
+            # 決算整理は、meno key:KIND　value:ADJUSTINGを指定して表現  &KIND::ADJUSTING                
             memo = record.get("memo",None)
             #開始仕訳
             opening=False
